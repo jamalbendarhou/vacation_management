@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum VacationStatus {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+
+// employees.prisma
+model Employee {
+  id              Int           @id @default(autoincrement())
+  last_name       String
+  first_name      String
+  email           String        @unique
+  password        String
+  role            String?
+  department      String?
+  vacations       Vacation[]    // Remove this field
+  vacation_employees VacationEmployees[]
+}
+
+// vacations.prisma
+model Vacation {
+  id              Int           @id @default(autoincrement())
+  title             String    @default("Vacation")
+  start_at        DateTime
+  end_at          DateTime
+  vacationTypeId  Int
+  vacation_type   VacationType  @relation(fields: [vacationTypeId], references: [id])
+  status          VacationStatus @default(PENDING)
+  employees       Employee[]    // Remove this field
+  vacation_employees VacationEmployees[]
+}
+
+
+// vacation_types.prisma
+model VacationType {
+  id          Int           @id @default(autoincrement())
+  label       String
+  vacations   Vacation[]    // Remove this field
+}
+
+// New junction table for many-to-many relationship
+model VacationEmployees {
+  vacation       Vacation   @relation(fields: [vacationId], references: [id])
+  vacationId     Int
+  employee       Employee   @relation(fields: [employeeId], references: [id])
+  employeeId     Int
+  @@id([vacationId, employeeId])
+  @@unique([vacationId, employeeId]) 
+}
