@@ -1,16 +1,16 @@
 "use client";
 import React,{useState ,useEffect}  from 'react';
 import BodyWrapper from '@components/BodyWrapper';
-import * as yup from 'yup';
-import { Formik, Form,ErrorMessage } from 'formik';
-import { Button ,message,Select,Space,Alert} from 'antd';
-import { useMutation,useQuery } from '@tanstack/react-query'
-import {createEmployee,updateEmployee,getEmployee} from "@api/client/employees"
-import {getVacations} from "@api/client/vacations"
-import {  Employee,Vacation } from '@prisma/client';
+import * as yup from 'yup'; // importation de yup permet la validation des donnees saisies 
+import { Formik, Form } from 'formik';  // importation de formik pour les formulaire
+import { Button ,Select,Space,Alert} from 'antd';//importation de quelques composante de ant design
+import { useMutation,useQuery } from '@tanstack/react-query';
+import {createEmployee,updateEmployee,getEmployee} from "@api/client/employees";// importation des fonction necessaire 
+import {getVacations} from "@api/client/vacations";// importation des fonction necessaire 
+import {  Employee,Vacation } from '@prisma/client';// importation des tables employe et vacance 
 import { useRouter } from 'next/navigation';
 import InputField from '@components/Fields/InputField';
-//import { Spin } from 'antd';
+
 
 type EmployeeInput = Partial<Employee> & { confirm_password?: string };
 
@@ -48,7 +48,6 @@ export default function EmployeeForm({ id }:{ id? :number}) {
     
 
     const router = useRouter();
-    const [messageApi, contextHolder] = message.useMessage();
     const [vacationOptions, setVacationOptions] = useState<vacationOptionsType[]>([]);
     const [selectedVacations, setSelectedVacations] = useState<Vacation[]>([]);
 
@@ -72,46 +71,21 @@ export default function EmployeeForm({ id }:{ id? :number}) {
 
     // create Mutation
     
-    const {mutate, isPending,error : createErr} = useMutation(
-        {
-            mutationFn : createEmployee,
-            onSuccess: () => {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Employee creer avec succes',
-                });
-                router.push('/employees')
-            },
-            onError: (error) => {
-                messageApi.open({
-                    type: 'error',
-                    content: error.message,
-                });
-            }
+    const { mutate, isPending } = useMutation({
+        mutationFn: createEmployee,
+        onSuccess: () => {
+            router.push('/employees')
         }
-    )
+    });
 
 
     // update Mutation
-    const {mutate : mutateUpdate , isPending : isPendingUpdate ,error : updateErr } = useMutation(
-        {
-            mutationFn : updateEmployee,
-            onSuccess: () => {
-                messageApi.open({
-                    type: 'success',
-                    content: 'Employe mise a jour',
-                });
-                router.push('/employees')
-            },
-            onError: (error) => {
-                console.log('error--',error);
-                messageApi.open({
-                    type: 'error',
-                    content: error.message,
-                });
-            }
+    const { mutate: mutateUpdate, isPending: isPendingUpdate } = useMutation({
+        mutationFn: updateEmployee,
+        onSuccess: () => {
+            router.push('/employees')
         }
-    )
+    });
 
     useEffect(() => {
 
@@ -128,23 +102,19 @@ export default function EmployeeForm({ id }:{ id? :number}) {
     }, [vacations,employeeData]);
 
     const handelCreate = (values: CreateEmployeeBody,resetForm : Function ) => {
-        delete values.employee.id;
-        mutate(values);
-        resetForm();
+        delete values.employee.id; // supression de l id 
+        mutate(values); // appel mutate des valeurs fournis 
+        resetForm(); // renitialisation du formulaire 
     }
 
     const handelUpdate = (values: UpdateEmployeeBody ) => {
-        mutateUpdate(values);
+        mutateUpdate(values); 
     }
-
-
-
-    console.log('updateErr',updateErr);
 
 
     return (
         <BodyWrapper>
-             {contextHolder}
+             
             <section className=" bg-blueGray-50">
                 <div className="w-full px-4 mx-auto mt-6">
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -160,26 +130,9 @@ export default function EmployeeForm({ id }:{ id? :number}) {
                         </Space>
                     }
 
-                    {
-                        createErr && <Space direction="vertical" className="w-full mb-5">
-                            <Alert
-                                message={createErr.message}
-                                type="error"
-                            />
-                        </Space>
-                    }
-
-                    {
-                        updateErr && <Space direction="vertical" className="w-full mb-5">
-                            <Alert
-                                message={updateErr.message}
-                                type="error"
-                            />
-                        </Space>
-                    }
 
                     <Formik
-                        initialValues={{
+                        initialValues={{ // initialisation des valeurs 
                             id: employeeData?.id || undefined,
                             last_name: employeeData?.last_name || '',
                             first_name: employeeData?.first_name || '',
@@ -190,7 +143,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
                             department: employeeData?.department || '',
                         }}
                             enableReinitialize={true}
-                            validationSchema={validationSchema}
+                            validationSchema={validationSchema} // validation des donnees preetablie avec YUP 
                             onSubmit={( values: EmployeeInput , { setSubmitting,resetForm }) => {
 
                                  
@@ -222,7 +175,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
                                             Creer un employe
                                             </h6>
 
-                                            <Button type="primary" htmlType="submit" loading={isPending || isPendingUpdate} >Save</Button>
+                                            <Button type="primary" htmlType="submit" loading={isPending || isPendingUpdate} >Enregistrer</Button>
                                         
                                         </div>
                                     </div>

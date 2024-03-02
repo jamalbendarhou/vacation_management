@@ -14,7 +14,8 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-5">
                 <Card title="Gérer les employés" linkTo="/employees" />
                 <Card title="Gérer les vacances" linkTo="/vacations" />
-                  <Card title="Gérer les types de vacances" linkTo="/vacation-types" />
+                <Card title="Gérer les types de vacances" linkTo="/vacation-types" />
+                
               </div>
             </div>
           </div>
