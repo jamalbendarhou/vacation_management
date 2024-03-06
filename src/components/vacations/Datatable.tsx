@@ -45,7 +45,7 @@ export default function DataTable({
 
   const handleEdit = (id: number) => {
     setRouterLoading(id);
-    router.push(`/vacations/edit/${id}`);
+    router.push(`/dashboard/vacations/edit/${id}`);
   };
 
   const handleDelete = (id: number) => {

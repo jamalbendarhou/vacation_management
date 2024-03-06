@@ -27,7 +27,7 @@ export default function ListContainer() {
                 buttonTitle="Ajouter types de Vacances"
                 handelClick={() => {
                     setLoading(true)
-                    router.push('vacation-types/create')
+                    router.push('/dashboard/vacation-types/create')
                 }}
                 loading={loading}
             />

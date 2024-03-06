@@ -8,45 +8,45 @@ import type { TableProps } from 'antd';
 import { DeleteOutlined ,EditOutlined} from '@ant-design/icons';//importation des icons effacer et modifier 
 import { useRouter } from 'next/navigation';
 
-// pour afficher  la liste des employes dans un tableau
-export default   function  DataTable({
+// pour afficher la liste des employes dans un tableau
+export default function DataTable({
   employees,
   isLoading = false,
-} : {
+}: {
   employees: Employee[];
   isLoading: boolean;
 }) {
 
-  // pour les messages d alerte
+  // pour les messages d'alerte
   const [messageApi, contextHolder] = message.useMessage();
-  const [routerLoading , setRouterLoading] = useState<number>(0);
+  const [routerLoading, setRouterLoading] = useState<number>(0);
   const router = useRouter();
 
   // recuperation des donnees
   const { refetch } = useQuery({
     queryKey: ["employees"],
     queryFn: getEmployees,
-  })
+  });
 
   // pour la suppression d un employe
-  const {mutate} = useMutation(
+  const { mutate } = useMutation(
     {
-        mutationFn : deleteEmployee,
-        onSuccess: () => {
-            messageApi.open({
-                type: 'success',
-                content: 'employe supprimer avec succes',
-              });
-              refetch();
-        },
-        onError: (error) => {
-            messageApi.open({
-                type: 'error',
-                content: error.message,
-            });
-        }
+      mutationFn: deleteEmployee,
+      onSuccess: () => {
+        messageApi.open({
+          type: 'success',
+          content: 'employe supprimer avec succes',
+        });
+        refetch();
+      },
+      onError: (error) => {
+        messageApi.open({
+          type: 'error',
+          content: error.message,
+        });
+      }
     }
-)
+  );
 
   // Colonnes du tableau
   const columns: TableProps<Employee>['columns'] = [
@@ -84,71 +84,65 @@ export default   function  DataTable({
       title: 'Conges',
       dataIndex: 'vacations',
       key: 'vacations',
-      render: (vacations : Vacation[]) => {
-          return (
-              <Button type="primary">Afficher les congés</Button>
-          )
-      },
+      render: (vacations: Vacation[]) => vacationContent(vacations),
     },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-            <Button 
-                type="primary"  
-                icon={<EditOutlined />} 
-                size="middle"
-                onClick={()=>{
-                    setRouterLoading(record.id);
-                  router.push(`/employees/edit/${record.id}`)
-                }}
-                loading={routerLoading==record.id ? true : false}
-              />
-              <Button 
-                type="primary" 
-                danger  
-                icon={<DeleteOutlined />} 
-                size="middle" 
-                onClick={()=>{
-                  mutate(record.id);
-                }}
-              />
-           
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            size="middle"
+            onClick={() => {
+              setRouterLoading(record.id);
+              router.push(`/dashboard/employees/edit/${record.id}`)
+            }}
+            loading={routerLoading == record.id ? true : false}
+          />
+          <Button
+            type="primary"
+            danger
+            icon={<DeleteOutlined />}
+            size="middle"
+            onClick={() => {
+              mutate(record.id);
+            }}
+          />
+
         </Space>
       ),
     },
   ];
 
   // Affichage du composant DataTable
-  return (    
+  return (
     <div className=" bg-white  shadow-md p-4 rounded-md mb-4">
       {contextHolder}
       <Table loading={isLoading} columns={columns} dataSource={employees} />
-  </div>
-      
-      );
+    </div>
+  );
 }
 
 // Contenu des vacances 
-const vacationContent = (vacations : Vacation[]) => {
-
-  if(vacations.length === 0) return (
+const vacationContent = (vacations: Vacation[]) => {
+  if (vacations.length === 0) return (
     <div>Aucun congé</div>
-  )
+  );
 
   return (
     <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-      {vacations.map((vacation : Vacation, index : number) => (
+      {vacations.map((vacation: Vacation, index: number) => (
         <li key={index} className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
+          <h5 className="text-lg text-slate-200">{vacation.title}</h5>
           <p className="ms-2">Statut : </p>
           <span>
-            {vacation.status === "APPROVED" ? "Approuvé" : 
-            vacation.status === "REJECTED" ? "Rejeté" : "En attente" }
+            {vacation.status === "APPROVED" ? "Approuvé" :
+              vacation.status === "REJECTED" ? "Rejeté" : "En attente"}
           </span>
-      </li>
+        </li>
       ))}
-  </ul>
-  
-  )
+    </ul>
+  );
 }

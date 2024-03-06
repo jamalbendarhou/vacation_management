@@ -74,7 +74,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
     const { mutate, isPending } = useMutation({
         mutationFn: createEmployee,
         onSuccess: () => {
-            router.push('/employees')
+            router.push('/dashboard/employees')
         }
     });
 
@@ -83,7 +83,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
     const { mutate: mutateUpdate, isPending: isPendingUpdate } = useMutation({
         mutationFn: updateEmployee,
         onSuccess: () => {
-            router.push('/employees')
+            router.push('/dashboard/employees')
         }
     });
 
@@ -225,7 +225,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
                                                     <Select
                                                         mode="multiple"
                                                         allowClear
-                                                        value={selectedVacations.map((v) => v.id.toString()) || []}
+                                                        value={selectedVacations.map((v) => v.title.toString()) || []}
                                                         style={{ width: "100%" }}
                                                         onChange={(value : string[]) => {
                                                             setSelectedVacations(vacations ? vacations.filter((v) => value.includes(v.id.toString())) : [])

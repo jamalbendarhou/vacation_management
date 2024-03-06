@@ -37,7 +37,7 @@ export default function VacationTypeForm({
                     type: 'success',
                     content: 'Type de vacances creer avec succes',
                 });
-                router.push('vacation-types')
+                router.push('/dashboard/vacation-types')
             },
             onError: (error) => {
                 messageApi.open({
@@ -56,7 +56,7 @@ export default function VacationTypeForm({
                     type: 'success',
                     content: 'mise a jou de type de vacance',
                 });
-                router.push('vacation-types')
+                router.push('/dashboard/vacation-types')
             },
             onError: (error) => {
                 messageApi.open({
