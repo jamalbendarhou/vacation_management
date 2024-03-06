@@ -34,12 +34,11 @@ export default function LoginForm() {
           callbackUrl: `/dashboard`,
           redirect: false,
         });
-        setSubmitting(false);
-
         if (loginRequest && loginRequest.ok) {
           resetForm();
           router.push("/dashboard");
         } else {
+          setSubmitting(false);
           // Toast failed
           messageApi.open({
             type: 'error',

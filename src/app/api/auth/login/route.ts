@@ -1,5 +1,3 @@
-
-
 import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
@@ -11,47 +9,48 @@ type LoginCredentials ={
     password: string;
 }
 
-export async function POST(req: NextApiRequest) {
+export  async function POST(req: NextApiRequest){
     try {
-        const { email, password }: LoginCredentials = req.body;
-
-        console.log('Email:', email);
-        console.log('Password:', password);
-
+        let passedValue = await new Response(req.body).text();
+        let body = JSON.parse(passedValue);
+        const {
+            email,
+            password
+        } : LoginCredentials  = body;
+           // Ensure the request body is not empty
         if (!email || !password) {
-            console.log('Informations d\'identification manquantes');
-            return NextResponse.json({ message: 'Les informations d\'identification sont requises' }, { status: 400 });
+            return NextResponse.json({ message: 'The Credentials is required' }, { status: 400 });
         }
 
-        const user = await prisma.employee.findUnique({
-            where: { email: email }
+         // Check if the email  exists
+         const user = await prisma.employee.findUnique({
+            where: {
+                email: email
+            }
         });
-
+        
         if (!user) {
-            console.log('Utilisateur non trouvé');
-            return NextResponse.json({ message: 'L\'e-mail ou le mot de passe est invalide' }, { status: 400 });
+            return NextResponse.json({ message: 'email ou mot de passe invalide' }, { status: 400 });
         }
-
-        if (password !== user.password) {
-            console.log('Mot de passe incorrect');
-            return NextResponse.json({ message: 'L\'e-mail ou le mot de passe est invalide' }, { status: 400 });
+        if (!user || password !== user.password) {
+            return NextResponse.json({ message: 'email ou mot de passe invalide' }, { status: 400 });
         }
-
-        console.log('Connexion réussie');
         return NextResponse.json(exclude(user, ["password"]), { status: 200 });
-    } catch (error: any) {
-        console.error('Erreur:', error.message);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+  
+   
+    } catch (error) {
+        return NextResponse.json({ error: error }, { status: 500 });
+       
     } finally {
         await prisma.$disconnect();
     }
 }
 
-function exclude(user: any, keys: string[]) {
+function exclude(user:any , keys:string[]) {
     for (let key of keys) {
-        delete user[key];
+      delete user[key];
     }
     return user;
-}
+  }
 
 export default POST;

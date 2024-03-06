@@ -14,15 +14,18 @@ const options : NextAuthOptions  = {
         
         async authorize(credentials : {  email: string; password: string; } | undefined, req: any): Promise<User | null> {
             if (credentials) {
+              
               try {
                 const userCredentials = {
                   email: credentials.email ,
                   password: credentials.password,
                 } 
+                
                 const user : User =  await login(userCredentials);
                 return user ? user : null;
               } catch (e: any) {
-                return null;
+                
+                throw new Error(JSON.stringify(e?.response));
               }
             } else {
               return null;

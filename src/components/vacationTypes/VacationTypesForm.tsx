@@ -113,7 +113,7 @@ export default function VacationTypeForm({
                                                  creation de type 
                                             </h6>
 
-                                            <Button type="primary" htmlType="submit" loading={isPending && isPendingUpdate} >{ id ? "Update" : "Save" }</Button>
+                                            <Button type="primary" htmlType="submit" loading={isPending && isPendingUpdate} >{ id ? "Update" : "Enregistrer" }</Button>
                                         
                                         </div>
                                     </div>
