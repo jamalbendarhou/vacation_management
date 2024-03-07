@@ -1,11 +1,11 @@
 "use client";
-import React,{useState} from 'react';
-import { Space, Table,message,Button} from 'antd';
-import {  Employee, Vacation } from '@prisma/client';  //importation des tables employee et vacances 
-import { useMutation ,useQuery} from '@tanstack/react-query';
-import {deleteEmployee,getEmployees} from "@api/client/employees"; //importation des fonctions pour afficher et pour effacer 
+import React, { useState } from 'react';
+import { Space, Table, message, Button } from 'antd';
+import { Employee, Vacation } from '@prisma/client'; //importation des tables employee et vacances 
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteEmployee, getEmployees } from "@api/client/employees"; //importation des fonctions pour afficher et pour effacer 
 import type { TableProps } from 'antd';
-import { DeleteOutlined ,EditOutlined} from '@ant-design/icons';//importation des icons effacer et modifier 
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';//importation des icons effacer et modifier 
 import { useRouter } from 'next/navigation';
 
 // pour afficher la liste des employes dans un tableau
@@ -127,16 +127,18 @@ export default function DataTable({
 
 // Contenu des vacances 
 const vacationContent = (vacations: Vacation[]) => {
-  if (vacations.length === 0) return (
-    <div>Aucun congé</div>
-  );
+  if (vacations.length === 0) return <div>Aucun congé</div>;
 
   return (
     <ul className="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
       {vacations.map((vacation: Vacation, index: number) => (
         <li key={index} className="w-full px-4 py-2 border-b border-gray-200 dark:border-gray-600">
           <h5 className="text-lg text-slate-200">{vacation.title}</h5>
-          <p className="ms-2">Statut : </p>
+          <p className="ms-2">date debut :</p>
+          <h5 className="text-lg text-slate-200">{formatDate(vacation.start_at)}</h5>
+          <p className="ms-2">date fin :</p>
+          <h5 className="text-lg text-slate-200">{formatDate(vacation.end_at)}</h5>
+          <p className="ms-2">Statut :</p>
           <span>
             {vacation.status === "APPROVED" ? "Approuvé" :
               vacation.status === "REJECTED" ? "Rejeté" : "En attente"}
@@ -145,4 +147,10 @@ const vacationContent = (vacations: Vacation[]) => {
       ))}
     </ul>
   );
-}
+};
+
+// Fonction pour formater les dates
+const formatDate = (date: Date) => {
+  const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+  return new Date(date).toLocaleDateString(undefined, options);
+};

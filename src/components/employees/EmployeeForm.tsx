@@ -97,7 +97,7 @@ export default function EmployeeForm({ id }:{ id? :number}) {
         }
 
         if(vacations){
-            setVacationOptions(vacations.map((v) => ({ value: v.id.toString(), label: "" })));
+            setVacationOptions(vacations.map((v) => ({ value: v.id.toString(), label:v.title })));
         }
     }, [vacations,employeeData]);
 
@@ -223,15 +223,20 @@ export default function EmployeeForm({ id }:{ id? :number}) {
                                                         Vacances
                                                     </label>
                                                     <Select
-                                                        mode="multiple"
-                                                        allowClear
-                                                        value={selectedVacations.map((v) => v.title.toString()) || []}
-                                                        style={{ width: "100%" }}
-                                                        onChange={(value : string[]) => {
-                                                            setSelectedVacations(vacations ? vacations.filter((v) => value.includes(v.id.toString())) : [])
-                                                        }}
-                                                        options={vacationOptions}
-                                                    />
+                                                            mode="multiple"
+                                                            allowClear
+                                                            value={selectedVacations.map((v) => v.title.toString()) || []}
+                                                            style={{ width: "100%" }}
+                                                            onChange={(value: string[])=>{
+                                                                setSelectedVacations(vacations ? vacations.filter((v) => value.includes(v.title.toString())) : [])
+                                                            }}
+                                                        >
+                                                            {vacationOptions.map(option => (
+                                                                <Select.Option key={option.value} value={option.label}>
+                                                                    {option.label}
+                                                                </Select.Option>
+                                                            ))}
+                                                    </Select>
                                                 </div>
                                             </div>
                                         </div>

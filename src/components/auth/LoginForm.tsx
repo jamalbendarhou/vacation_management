@@ -34,6 +34,8 @@ export default function LoginForm() {
           callbackUrl: `/dashboard`,
           redirect: false,
         });
+        
+
         if (loginRequest && loginRequest.ok) {
           resetForm();
           router.push("/dashboard");
